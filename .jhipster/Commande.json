@@ -1,0 +1,41 @@
+{
+  "applications": "*",
+  "changelogDate": "20220414172048",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "commande",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Commande",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "utilisateur",
+      "otherEntityRelationshipName": "commande",
+      "relationshipName": "utilisateur",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "livreur",
+      "otherEntityRelationshipName": "commande",
+      "relationshipName": "livreur",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "produit",
+      "otherEntityRelationshipName": "commande",
+      "ownerSide": false,
+      "relationshipName": "produit",
+      "relationshipType": "many-to-many"
+    }
+  ],
+  "service": "serviceClass"
+}

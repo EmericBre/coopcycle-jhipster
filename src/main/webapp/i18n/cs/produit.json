@@ -1,0 +1,29 @@
+{
+  "coopcyclejhipsterApp": {
+    "produit": {
+      "home": {
+        "title": "Produits",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Vytvořit Produit",
+        "createOrEditLabel": "Vytvořit nebo upravit Produit",
+        "notFound": "No Produits found"
+      },
+      "created": "Byl vytvořen potomek entity Produit s identifikátorem {{ param }}",
+      "updated": "Potomek entity Produit s identifikátorem {{ param }} byl upravený.",
+      "deleted": "Potomek entity Produit s identifikátorem {{ param }} bol smazaný.",
+      "delete": {
+        "question": "Jste si jisti, že chcete smazat Produit {{ id }}?"
+      },
+      "detail": {
+        "title": "Produit"
+      },
+      "id": "Id",
+      "price": "Price",
+      "type": "Type",
+      "description": "Description",
+      "commande": "Commande",
+      "paiement": "Paiement",
+      "commerce": "Commerce"
+    }
+  }
+}

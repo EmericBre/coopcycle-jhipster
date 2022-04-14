@@ -1,0 +1,28 @@
+{
+  "coopcyclejhipsterApp": {
+    "commerce": {
+      "home": {
+        "title": "Commerce",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Kreirati Commerce",
+        "createOrEditLabel": "Kreirati ili urediti Commerce",
+        "notFound": "Nije nađeno Commerce"
+      },
+      "created": "Kreiran je Commerce sa identifikatorom {{ param }}",
+      "updated": "Ažuriran je Commerce sa identifikatorom {{ param }}",
+      "deleted": "Obrisan je Commerce sa identifikatorom {{ param }}",
+      "delete": {
+        "question": "Da li ste sigurni da želite obrisati Commerce {{ id }}?"
+      },
+      "detail": {
+        "title": "Commerce"
+      },
+      "id": "Id",
+      "name": "Name",
+      "adress": "Adress",
+      "produit": "Produit",
+      "cooperative": "Cooperative",
+      "utilisateur": "Utilisateur"
+    }
+  }
+}

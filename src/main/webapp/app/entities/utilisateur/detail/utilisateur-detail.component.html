@@ -1,0 +1,48 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="utilisateur">
+      <h2 data-cy="utilisateurDetailsHeading"><span jhiTranslate="coopcyclejhipsterApp.utilisateur.detail.title">Utilisateur</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="coopcyclejhipsterApp.utilisateur.id">Id</span></dt>
+        <dd>
+          <span>{{ utilisateur.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="coopcyclejhipsterApp.utilisateur.firstname">Firstname</span></dt>
+        <dd>
+          <span>{{ utilisateur.firstname }}</span>
+        </dd>
+        <dt><span jhiTranslate="coopcyclejhipsterApp.utilisateur.lastname">Lastname</span></dt>
+        <dd>
+          <span>{{ utilisateur.lastname }}</span>
+        </dd>
+        <dt><span jhiTranslate="coopcyclejhipsterApp.utilisateur.mail">Mail</span></dt>
+        <dd>
+          <span>{{ utilisateur.mail }}</span>
+        </dd>
+        <dt><span jhiTranslate="coopcyclejhipsterApp.utilisateur.phone">Phone</span></dt>
+        <dd>
+          <span>{{ utilisateur.phone }}</span>
+        </dd>
+        <dt><span jhiTranslate="coopcyclejhipsterApp.utilisateur.address">Address</span></dt>
+        <dd>
+          <span>{{ utilisateur.address }}</span>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/utilisateur', utilisateur.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

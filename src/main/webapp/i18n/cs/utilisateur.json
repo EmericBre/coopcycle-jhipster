@@ -1,0 +1,30 @@
+{
+  "coopcyclejhipsterApp": {
+    "utilisateur": {
+      "home": {
+        "title": "Utilisateurs",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Vytvořit Utilisateur",
+        "createOrEditLabel": "Vytvořit nebo upravit Utilisateur",
+        "notFound": "No Utilisateurs found"
+      },
+      "created": "Byl vytvořen potomek entity Utilisateur s identifikátorem {{ param }}",
+      "updated": "Potomek entity Utilisateur s identifikátorem {{ param }} byl upravený.",
+      "deleted": "Potomek entity Utilisateur s identifikátorem {{ param }} bol smazaný.",
+      "delete": {
+        "question": "Jste si jisti, že chcete smazat Utilisateur {{ id }}?"
+      },
+      "detail": {
+        "title": "Utilisateur"
+      },
+      "id": "Id",
+      "firstname": "Firstname",
+      "lastname": "Lastname",
+      "mail": "Mail",
+      "phone": "Phone",
+      "address": "Address",
+      "commerce": "Commerce",
+      "commande": "Commande"
+    }
+  }
+}

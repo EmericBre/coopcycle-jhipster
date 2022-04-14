@@ -7,6 +7,13 @@
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
         "main": "Entiteti",
+        "utilisateur": "Utilisateur",
+        "produit": "Produit",
+        "paiement": "Paiement",
+        "commande": "Commande",
+        "livreur": "Livreur",
+        "cooperative": "Cooperative",
+        "commerce": "Commerce",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {
@@ -137,5 +144,5 @@
       "not.image": "Očekivano je da datoteka bude slika ali je prepoznato \"{{ fileType }}\""
     }
   },
-  "footer": "Ovo je podnožje stranice"
+  "footer": "Emeric Breton"
 }

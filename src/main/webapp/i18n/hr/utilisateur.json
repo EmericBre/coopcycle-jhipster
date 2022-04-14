@@ -1,0 +1,30 @@
+{
+  "coopcyclejhipsterApp": {
+    "utilisateur": {
+      "home": {
+        "title": "Utilisateurs",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Kreirati Utilisateur",
+        "createOrEditLabel": "Kreirati ili urediti Utilisateur",
+        "notFound": "Nije nađeno Utilisateurs"
+      },
+      "created": "Kreiran je Utilisateur sa identifikatorom {{ param }}",
+      "updated": "Ažuriran je Utilisateur sa identifikatorom {{ param }}",
+      "deleted": "Obrisan je Utilisateur sa identifikatorom {{ param }}",
+      "delete": {
+        "question": "Da li ste sigurni da želite obrisati Utilisateur {{ id }}?"
+      },
+      "detail": {
+        "title": "Utilisateur"
+      },
+      "id": "Id",
+      "firstname": "Firstname",
+      "lastname": "Lastname",
+      "mail": "Mail",
+      "phone": "Phone",
+      "address": "Address",
+      "commerce": "Commerce",
+      "commande": "Commande"
+    }
+  }
+}

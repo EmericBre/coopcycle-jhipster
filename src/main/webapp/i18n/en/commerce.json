@@ -1,0 +1,28 @@
+{
+  "coopcyclejhipsterApp": {
+    "commerce": {
+      "home": {
+        "title": "Commerce",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Commerce",
+        "createOrEditLabel": "Create or edit a Commerce",
+        "notFound": "No Commerce found"
+      },
+      "created": "A new Commerce is created with identifier {{ param }}",
+      "updated": "A Commerce is updated with identifier {{ param }}",
+      "deleted": "A Commerce is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Commerce {{ id }}?"
+      },
+      "detail": {
+        "title": "Commerce"
+      },
+      "id": "Id",
+      "name": "Name",
+      "adress": "Adress",
+      "produit": "Produit",
+      "cooperative": "Cooperative",
+      "utilisateur": "Utilisateur"
+    }
+  }
+}

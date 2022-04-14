@@ -1,0 +1,28 @@
+{
+  "coopcyclejhipsterApp": {
+    "commerce": {
+      "home": {
+        "title": "Commerce",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Vytvořit Commerce",
+        "createOrEditLabel": "Vytvořit nebo upravit Commerce",
+        "notFound": "No Commerce found"
+      },
+      "created": "Byl vytvořen potomek entity Commerce s identifikátorem {{ param }}",
+      "updated": "Potomek entity Commerce s identifikátorem {{ param }} byl upravený.",
+      "deleted": "Potomek entity Commerce s identifikátorem {{ param }} bol smazaný.",
+      "delete": {
+        "question": "Jste si jisti, že chcete smazat Commerce {{ id }}?"
+      },
+      "detail": {
+        "title": "Commerce"
+      },
+      "id": "Id",
+      "name": "Name",
+      "adress": "Adress",
+      "produit": "Produit",
+      "cooperative": "Cooperative",
+      "utilisateur": "Utilisateur"
+    }
+  }
+}

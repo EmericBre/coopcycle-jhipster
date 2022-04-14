@@ -1,0 +1,26 @@
+{
+  "coopcyclejhipsterApp": {
+    "cooperative": {
+      "home": {
+        "title": "Cooperatives",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Kreirati Cooperative",
+        "createOrEditLabel": "Kreirati ili urediti Cooperative",
+        "notFound": "Nije nađeno Cooperatives"
+      },
+      "created": "Kreiran je Cooperative sa identifikatorom {{ param }}",
+      "updated": "Ažuriran je Cooperative sa identifikatorom {{ param }}",
+      "deleted": "Obrisan je Cooperative sa identifikatorom {{ param }}",
+      "delete": {
+        "question": "Da li ste sigurni da želite obrisati Cooperative {{ id }}?"
+      },
+      "detail": {
+        "title": "Cooperative"
+      },
+      "id": "Id",
+      "name": "Name",
+      "adress": "Adress",
+      "commerce": "Commerce"
+    }
+  }
+}

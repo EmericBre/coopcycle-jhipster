@@ -1,0 +1,60 @@
+entity Utilisateur {
+    id String required
+    firstname String required maxlength(30) pattern(/^[A-Z][a-z]+$/)
+    lastname String required maxlength(30) pattern(/^[A-Z][a-z]+$/)
+    mail String
+    phone String
+    address String required maxlength(100)
+}
+
+entity Produit {
+    id String required,
+    price Float required min(0),
+  	type String required,
+    description String
+}
+
+entity Paiement {
+    amount Float required min(0)
+}
+
+entity Commande {
+    id String required
+}
+
+entity Livreur {
+    id String required
+    firstname String required maxlength(30) pattern(/^[A-Z][a-z]+$/)
+    lastname String required maxlength(30) pattern(/^[A-Z][a-z]+$/)
+    phone String required
+}
+
+entity Cooperative {
+	id String required,
+    name String required,
+    adress String
+}
+
+entity Commerce {
+	id String required,
+    name String required,
+    adress String required
+}
+
+relationship OneToOne {
+	Paiement to Produit
+}
+
+relationship OneToMany {
+    Utilisateur to Commerce,
+    Utilisateur to Commande,
+    Livreur to Commande,
+    Commerce to Produit
+}
+
+relationship ManyToMany {
+    Produit to Commande,
+    Commerce to Cooperative
+}
+
+dto * with mapstruct

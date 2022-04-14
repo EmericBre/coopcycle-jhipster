@@ -1,0 +1,26 @@
+{
+  "coopcyclejhipsterApp": {
+    "commande": {
+      "home": {
+        "title": "Commandes",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Vytvořit Commande",
+        "createOrEditLabel": "Vytvořit nebo upravit Commande",
+        "notFound": "No Commandes found"
+      },
+      "created": "Byl vytvořen potomek entity Commande s identifikátorem {{ param }}",
+      "updated": "Potomek entity Commande s identifikátorem {{ param }} byl upravený.",
+      "deleted": "Potomek entity Commande s identifikátorem {{ param }} bol smazaný.",
+      "delete": {
+        "question": "Jste si jisti, že chcete smazat Commande {{ id }}?"
+      },
+      "detail": {
+        "title": "Commande"
+      },
+      "id": "Id",
+      "utilisateur": "Utilisateur",
+      "livreur": "Livreur",
+      "produit": "Produit"
+    }
+  }
+}

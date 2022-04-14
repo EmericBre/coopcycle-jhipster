@@ -1,0 +1,38 @@
+{
+  "applications": "*",
+  "changelogDate": "20220414172050",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "cooperative",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "adress",
+      "fieldType": "String"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Cooperative",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "commerce",
+      "otherEntityRelationshipName": "cooperative",
+      "ownerSide": false,
+      "relationshipName": "commerce",
+      "relationshipType": "many-to-many"
+    }
+  ],
+  "service": "serviceClass"
+}

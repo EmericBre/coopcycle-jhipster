@@ -1,0 +1,29 @@
+{
+  "coopcyclejhipsterApp": {
+    "produit": {
+      "home": {
+        "title": "Produits",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Kreirati Produit",
+        "createOrEditLabel": "Kreirati ili urediti Produit",
+        "notFound": "Nije nađeno Produits"
+      },
+      "created": "Kreiran je Produit sa identifikatorom {{ param }}",
+      "updated": "Ažuriran je Produit sa identifikatorom {{ param }}",
+      "deleted": "Obrisan je Produit sa identifikatorom {{ param }}",
+      "delete": {
+        "question": "Da li ste sigurni da želite obrisati Produit {{ id }}?"
+      },
+      "detail": {
+        "title": "Produit"
+      },
+      "id": "Id",
+      "price": "Price",
+      "type": "Type",
+      "description": "Description",
+      "commande": "Commande",
+      "paiement": "Paiement",
+      "commerce": "Commerce"
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "applications": "*",
+  "changelogDate": "20220414172046",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "produit",
+  "fields": [
+    {
+      "fieldName": "id",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "price",
+      "fieldType": "Float",
+      "fieldValidateRules": ["required", "min"],
+      "fieldValidateRulesMin": "0"
+    },
+    {
+      "fieldName": "type",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    }
+  ],
+  "fluentMethods": true,
+  "jpaMetamodelFiltering": false,
+  "name": "Produit",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "commande",
+      "otherEntityRelationshipName": "produit",
+      "ownerSide": true,
+      "relationshipName": "commande",
+      "relationshipType": "many-to-many"
+    },
+    {
+      "otherEntityName": "paiement",
+      "otherEntityRelationshipName": "produit",
+      "ownerSide": false,
+      "relationshipName": "paiement",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityName": "commerce",
+      "otherEntityRelationshipName": "produit",
+      "relationshipName": "commerce",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceClass"
+}

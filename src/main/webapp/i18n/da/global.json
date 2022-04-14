@@ -7,6 +7,13 @@
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
         "main": "Entities",
+        "utilisateur": "Utilisateur",
+        "produit": "Produit",
+        "paiement": "Paiement",
+        "commande": "Commande",
+        "livreur": "Livreur",
+        "cooperative": "Cooperative",
+        "commerce": "Commerce",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {
@@ -136,5 +143,5 @@
       "not.image": "File was expected to be an image but was found to be \"{{ fileType }}\""
     }
   },
-  "footer": "Det her er sidefoden"
+  "footer": "Emeric Breton"
 }

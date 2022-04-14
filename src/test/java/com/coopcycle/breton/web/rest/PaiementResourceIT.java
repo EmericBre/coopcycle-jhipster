@@ -1,0 +1,492 @@
+package com.coopcycle.breton.web.rest;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.is;
+
+import com.coopcycle.breton.IntegrationTest;
+import com.coopcycle.breton.domain.Paiement;
+import com.coopcycle.breton.repository.EntityManager;
+import com.coopcycle.breton.repository.PaiementRepository;
+import com.coopcycle.breton.service.dto.PaiementDTO;
+import com.coopcycle.breton.service.mapper.PaiementMapper;
+import java.time.Duration;
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicLong;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.web.reactive.server.WebTestClient;
+
+/**
+ * Integration tests for the {@link PaiementResource} REST controller.
+ */
+@IntegrationTest
+@AutoConfigureWebTestClient(timeout = IntegrationTest.DEFAULT_ENTITY_TIMEOUT)
+@WithMockUser
+class PaiementResourceIT {
+
+    private static final Float DEFAULT_AMOUNT = 0F;
+    private static final Float UPDATED_AMOUNT = 1F;
+
+    private static final String ENTITY_API_URL = "/api/paiements";
+    private static final String ENTITY_API_URL_ID = ENTITY_API_URL + "/{id}";
+
+    private static Random random = new Random();
+    private static AtomicLong count = new AtomicLong(random.nextInt() + (2 * Integer.MAX_VALUE));
+
+    @Autowired
+    private PaiementRepository paiementRepository;
+
+    @Autowired
+    private PaiementMapper paiementMapper;
+
+    @Autowired
+    private EntityManager em;
+
+    @Autowired
+    private WebTestClient webTestClient;
+
+    private Paiement paiement;
+
+    /**
+     * Create an entity for this test.
+     *
+     * This is a static method, as tests for other entities might also need it,
+     * if they test an entity which requires the current entity.
+     */
+    public static Paiement createEntity(EntityManager em) {
+        Paiement paiement = new Paiement().amount(DEFAULT_AMOUNT);
+        return paiement;
+    }
+
+    /**
+     * Create an updated entity for this test.
+     *
+     * This is a static method, as tests for other entities might also need it,
+     * if they test an entity which requires the current entity.
+     */
+    public static Paiement createUpdatedEntity(EntityManager em) {
+        Paiement paiement = new Paiement().amount(UPDATED_AMOUNT);
+        return paiement;
+    }
+
+    public static void deleteEntities(EntityManager em) {
+        try {
+            em.deleteAll(Paiement.class).block();
+        } catch (Exception e) {
+            // It can fail, if other entities are still referring this - it will be removed later.
+        }
+    }
+
+    @AfterEach
+    public void cleanup() {
+        deleteEntities(em);
+    }
+
+    @BeforeEach
+    public void initTest() {
+        deleteEntities(em);
+        paiement = createEntity(em);
+    }
+
+    @Test
+    void createPaiement() throws Exception {
+        int databaseSizeBeforeCreate = paiementRepository.findAll().collectList().block().size();
+        // Create the Paiement
+        PaiementDTO paiementDTO = paiementMapper.toDto(paiement);
+        webTestClient
+            .post()
+            .uri(ENTITY_API_URL)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(TestUtil.convertObjectToJsonBytes(paiementDTO))
+            .exchange()
+            .expectStatus()
+            .isCreated();
+
+        // Validate the Paiement in the database
+        List<Paiement> paiementList = paiementRepository.findAll().collectList().block();
+        assertThat(paiementList).hasSize(databaseSizeBeforeCreate + 1);
+        Paiement testPaiement = paiementList.get(paiementList.size() - 1);
+        assertThat(testPaiement.getAmount()).isEqualTo(DEFAULT_AMOUNT);
+    }
+
+    @Test
+    void createPaiementWithExistingId() throws Exception {
+        // Create the Paiement with an existing ID
+        paiement.setId(1L);
+        PaiementDTO paiementDTO = paiementMapper.toDto(paiement);
+
+        int databaseSizeBeforeCreate = paiementRepository.findAll().collectList().block().size();
+
+        // An entity with an existing ID cannot be created, so this API call must fail
+        webTestClient
+            .post()
+            .uri(ENTITY_API_URL)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(TestUtil.convertObjectToJsonBytes(paiementDTO))
+            .exchange()
+            .expectStatus()
+            .isBadRequest();
+
+        // Validate the Paiement in the database
+        List<Paiement> paiementList = paiementRepository.findAll().collectList().block();
+        assertThat(paiementList).hasSize(databaseSizeBeforeCreate);
+    }
+
+    @Test
+    void checkAmountIsRequired() throws Exception {
+        int databaseSizeBeforeTest = paiementRepository.findAll().collectList().block().size();
+        // set the field null
+        paiement.setAmount(null);
+
+        // Create the Paiement, which fails.
+        PaiementDTO paiementDTO = paiementMapper.toDto(paiement);
+
+        webTestClient
+            .post()
+            .uri(ENTITY_API_URL)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(TestUtil.convertObjectToJsonBytes(paiementDTO))
+            .exchange()
+            .expectStatus()
+            .isBadRequest();
+
+        List<Paiement> paiementList = paiementRepository.findAll().collectList().block();
+        assertThat(paiementList).hasSize(databaseSizeBeforeTest);
+    }
+
+    @Test
+    void getAllPaiementsAsStream() {
+        // Initialize the database
+        paiementRepository.save(paiement).block();
+
+        List<Paiement> paiementList = webTestClient
+            .get()
+            .uri(ENTITY_API_URL)
+            .accept(MediaType.APPLICATION_NDJSON)
+            .exchange()
+            .expectStatus()
+            .isOk()
+            .expectHeader()
+            .contentTypeCompatibleWith(MediaType.APPLICATION_NDJSON)
+            .returnResult(PaiementDTO.class)
+            .getResponseBody()
+            .map(paiementMapper::toEntity)
+            .filter(paiement::equals)
+            .collectList()
+            .block(Duration.ofSeconds(5));
+
+        assertThat(paiementList).isNotNull();
+        assertThat(paiementList).hasSize(1);
+        Paiement testPaiement = paiementList.get(0);
+        assertThat(testPaiement.getAmount()).isEqualTo(DEFAULT_AMOUNT);
+    }
+
+    @Test
+    void getAllPaiements() {
+        // Initialize the database
+        paiementRepository.save(paiement).block();
+
+        // Get all the paiementList
+        webTestClient
+            .get()
+            .uri(ENTITY_API_URL + "?sort=id,desc")
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus()
+            .isOk()
+            .expectHeader()
+            .contentType(MediaType.APPLICATION_JSON)
+            .expectBody()
+            .jsonPath("$.[*].id")
+            .value(hasItem(paiement.getId().intValue()))
+            .jsonPath("$.[*].amount")
+            .value(hasItem(DEFAULT_AMOUNT.doubleValue()));
+    }
+
+    @Test
+    void getPaiement() {
+        // Initialize the database
+        paiementRepository.save(paiement).block();
+
+        // Get the paiement
+        webTestClient
+            .get()
+            .uri(ENTITY_API_URL_ID, paiement.getId())
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus()
+            .isOk()
+            .expectHeader()
+            .contentType(MediaType.APPLICATION_JSON)
+            .expectBody()
+            .jsonPath("$.id")
+            .value(is(paiement.getId().intValue()))
+            .jsonPath("$.amount")
+            .value(is(DEFAULT_AMOUNT.doubleValue()));
+    }
+
+    @Test
+    void getNonExistingPaiement() {
+        // Get the paiement
+        webTestClient
+            .get()
+            .uri(ENTITY_API_URL_ID, Long.MAX_VALUE)
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus()
+            .isNotFound();
+    }
+
+    @Test
+    void putNewPaiement() throws Exception {
+        // Initialize the database
+        paiementRepository.save(paiement).block();
+
+        int databaseSizeBeforeUpdate = paiementRepository.findAll().collectList().block().size();
+
+        // Update the paiement
+        Paiement updatedPaiement = paiementRepository.findById(paiement.getId()).block();
+        updatedPaiement.amount(UPDATED_AMOUNT);
+        PaiementDTO paiementDTO = paiementMapper.toDto(updatedPaiement);
+
+        webTestClient
+            .put()
+            .uri(ENTITY_API_URL_ID, paiementDTO.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(TestUtil.convertObjectToJsonBytes(paiementDTO))
+            .exchange()
+            .expectStatus()
+            .isOk();
+
+        // Validate the Paiement in the database
+        List<Paiement> paiementList = paiementRepository.findAll().collectList().block();
+        assertThat(paiementList).hasSize(databaseSizeBeforeUpdate);
+        Paiement testPaiement = paiementList.get(paiementList.size() - 1);
+        assertThat(testPaiement.getAmount()).isEqualTo(UPDATED_AMOUNT);
+    }
+
+    @Test
+    void putNonExistingPaiement() throws Exception {
+        int databaseSizeBeforeUpdate = paiementRepository.findAll().collectList().block().size();
+        paiement.setId(count.incrementAndGet());
+
+        // Create the Paiement
+        PaiementDTO paiementDTO = paiementMapper.toDto(paiement);
+
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
+        webTestClient
+            .put()
+            .uri(ENTITY_API_URL_ID, paiementDTO.getId())
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(TestUtil.convertObjectToJsonBytes(paiementDTO))
+            .exchange()
+            .expectStatus()
+            .isBadRequest();
+
+        // Validate the Paiement in the database
+        List<Paiement> paiementList = paiementRepository.findAll().collectList().block();
+        assertThat(paiementList).hasSize(databaseSizeBeforeUpdate);
+    }
+
+    @Test
+    void putWithIdMismatchPaiement() throws Exception {
+        int databaseSizeBeforeUpdate = paiementRepository.findAll().collectList().block().size();
+        paiement.setId(count.incrementAndGet());
+
+        // Create the Paiement
+        PaiementDTO paiementDTO = paiementMapper.toDto(paiement);
+
+        // If url ID doesn't match entity ID, it will throw BadRequestAlertException
+        webTestClient
+            .put()
+            .uri(ENTITY_API_URL_ID, count.incrementAndGet())
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(TestUtil.convertObjectToJsonBytes(paiementDTO))
+            .exchange()
+            .expectStatus()
+            .isBadRequest();
+
+        // Validate the Paiement in the database
+        List<Paiement> paiementList = paiementRepository.findAll().collectList().block();
+        assertThat(paiementList).hasSize(databaseSizeBeforeUpdate);
+    }
+
+    @Test
+    void putWithMissingIdPathParamPaiement() throws Exception {
+        int databaseSizeBeforeUpdate = paiementRepository.findAll().collectList().block().size();
+        paiement.setId(count.incrementAndGet());
+
+        // Create the Paiement
+        PaiementDTO paiementDTO = paiementMapper.toDto(paiement);
+
+        // If url ID doesn't match entity ID, it will throw BadRequestAlertException
+        webTestClient
+            .put()
+            .uri(ENTITY_API_URL)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(TestUtil.convertObjectToJsonBytes(paiementDTO))
+            .exchange()
+            .expectStatus()
+            .isEqualTo(405);
+
+        // Validate the Paiement in the database
+        List<Paiement> paiementList = paiementRepository.findAll().collectList().block();
+        assertThat(paiementList).hasSize(databaseSizeBeforeUpdate);
+    }
+
+    @Test
+    void partialUpdatePaiementWithPatch() throws Exception {
+        // Initialize the database
+        paiementRepository.save(paiement).block();
+
+        int databaseSizeBeforeUpdate = paiementRepository.findAll().collectList().block().size();
+
+        // Update the paiement using partial update
+        Paiement partialUpdatedPaiement = new Paiement();
+        partialUpdatedPaiement.setId(paiement.getId());
+
+        webTestClient
+            .patch()
+            .uri(ENTITY_API_URL_ID, partialUpdatedPaiement.getId())
+            .contentType(MediaType.valueOf("application/merge-patch+json"))
+            .bodyValue(TestUtil.convertObjectToJsonBytes(partialUpdatedPaiement))
+            .exchange()
+            .expectStatus()
+            .isOk();
+
+        // Validate the Paiement in the database
+        List<Paiement> paiementList = paiementRepository.findAll().collectList().block();
+        assertThat(paiementList).hasSize(databaseSizeBeforeUpdate);
+        Paiement testPaiement = paiementList.get(paiementList.size() - 1);
+        assertThat(testPaiement.getAmount()).isEqualTo(DEFAULT_AMOUNT);
+    }
+
+    @Test
+    void fullUpdatePaiementWithPatch() throws Exception {
+        // Initialize the database
+        paiementRepository.save(paiement).block();
+
+        int databaseSizeBeforeUpdate = paiementRepository.findAll().collectList().block().size();
+
+        // Update the paiement using partial update
+        Paiement partialUpdatedPaiement = new Paiement();
+        partialUpdatedPaiement.setId(paiement.getId());
+
+        partialUpdatedPaiement.amount(UPDATED_AMOUNT);
+
+        webTestClient
+            .patch()
+            .uri(ENTITY_API_URL_ID, partialUpdatedPaiement.getId())
+            .contentType(MediaType.valueOf("application/merge-patch+json"))
+            .bodyValue(TestUtil.convertObjectToJsonBytes(partialUpdatedPaiement))
+            .exchange()
+            .expectStatus()
+            .isOk();
+
+        // Validate the Paiement in the database
+        List<Paiement> paiementList = paiementRepository.findAll().collectList().block();
+        assertThat(paiementList).hasSize(databaseSizeBeforeUpdate);
+        Paiement testPaiement = paiementList.get(paiementList.size() - 1);
+        assertThat(testPaiement.getAmount()).isEqualTo(UPDATED_AMOUNT);
+    }
+
+    @Test
+    void patchNonExistingPaiement() throws Exception {
+        int databaseSizeBeforeUpdate = paiementRepository.findAll().collectList().block().size();
+        paiement.setId(count.incrementAndGet());
+
+        // Create the Paiement
+        PaiementDTO paiementDTO = paiementMapper.toDto(paiement);
+
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
+        webTestClient
+            .patch()
+            .uri(ENTITY_API_URL_ID, paiementDTO.getId())
+            .contentType(MediaType.valueOf("application/merge-patch+json"))
+            .bodyValue(TestUtil.convertObjectToJsonBytes(paiementDTO))
+            .exchange()
+            .expectStatus()
+            .isBadRequest();
+
+        // Validate the Paiement in the database
+        List<Paiement> paiementList = paiementRepository.findAll().collectList().block();
+        assertThat(paiementList).hasSize(databaseSizeBeforeUpdate);
+    }
+
+    @Test
+    void patchWithIdMismatchPaiement() throws Exception {
+        int databaseSizeBeforeUpdate = paiementRepository.findAll().collectList().block().size();
+        paiement.setId(count.incrementAndGet());
+
+        // Create the Paiement
+        PaiementDTO paiementDTO = paiementMapper.toDto(paiement);
+
+        // If url ID doesn't match entity ID, it will throw BadRequestAlertException
+        webTestClient
+            .patch()
+            .uri(ENTITY_API_URL_ID, count.incrementAndGet())
+            .contentType(MediaType.valueOf("application/merge-patch+json"))
+            .bodyValue(TestUtil.convertObjectToJsonBytes(paiementDTO))
+            .exchange()
+            .expectStatus()
+            .isBadRequest();
+
+        // Validate the Paiement in the database
+        List<Paiement> paiementList = paiementRepository.findAll().collectList().block();
+        assertThat(paiementList).hasSize(databaseSizeBeforeUpdate);
+    }
+
+    @Test
+    void patchWithMissingIdPathParamPaiement() throws Exception {
+        int databaseSizeBeforeUpdate = paiementRepository.findAll().collectList().block().size();
+        paiement.setId(count.incrementAndGet());
+
+        // Create the Paiement
+        PaiementDTO paiementDTO = paiementMapper.toDto(paiement);
+
+        // If url ID doesn't match entity ID, it will throw BadRequestAlertException
+        webTestClient
+            .patch()
+            .uri(ENTITY_API_URL)
+            .contentType(MediaType.valueOf("application/merge-patch+json"))
+            .bodyValue(TestUtil.convertObjectToJsonBytes(paiementDTO))
+            .exchange()
+            .expectStatus()
+            .isEqualTo(405);
+
+        // Validate the Paiement in the database
+        List<Paiement> paiementList = paiementRepository.findAll().collectList().block();
+        assertThat(paiementList).hasSize(databaseSizeBeforeUpdate);
+    }
+
+    @Test
+    void deletePaiement() {
+        // Initialize the database
+        paiementRepository.save(paiement).block();
+
+        int databaseSizeBeforeDelete = paiementRepository.findAll().collectList().block().size();
+
+        // Delete the paiement
+        webTestClient
+            .delete()
+            .uri(ENTITY_API_URL_ID, paiement.getId())
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus()
+            .isNoContent();
+
+        // Validate the database contains one less item
+        List<Paiement> paiementList = paiementRepository.findAll().collectList().block();
+        assertThat(paiementList).hasSize(databaseSizeBeforeDelete - 1);
+    }
+}

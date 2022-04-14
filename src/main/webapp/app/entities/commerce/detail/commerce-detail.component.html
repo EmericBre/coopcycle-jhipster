@@ -1,0 +1,49 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <div *ngIf="commerce">
+      <h2 data-cy="commerceDetailsHeading"><span jhiTranslate="coopcyclejhipsterApp.commerce.detail.title">Commerce</span></h2>
+
+      <hr />
+
+      <jhi-alert-error></jhi-alert-error>
+
+      <jhi-alert></jhi-alert>
+
+      <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="coopcyclejhipsterApp.commerce.id">Id</span></dt>
+        <dd>
+          <span>{{ commerce.id }}</span>
+        </dd>
+        <dt><span jhiTranslate="coopcyclejhipsterApp.commerce.name">Name</span></dt>
+        <dd>
+          <span>{{ commerce.name }}</span>
+        </dd>
+        <dt><span jhiTranslate="coopcyclejhipsterApp.commerce.adress">Adress</span></dt>
+        <dd>
+          <span>{{ commerce.adress }}</span>
+        </dd>
+        <dt><span jhiTranslate="coopcyclejhipsterApp.commerce.cooperative">Cooperative</span></dt>
+        <dd>
+          <span *ngFor="let cooperative of commerce.cooperatives; let last = last">
+            <a [routerLink]="['/cooperative', cooperative?.id, 'view']">{{ cooperative.id }}</a
+            >{{ last ? '' : ', ' }}
+          </span>
+        </dd>
+        <dt><span jhiTranslate="coopcyclejhipsterApp.commerce.utilisateur">Utilisateur</span></dt>
+        <dd>
+          <div *ngIf="commerce.utilisateur">
+            <a [routerLink]="['/utilisateur', commerce.utilisateur?.id, 'view']">{{ commerce.utilisateur?.id }}</a>
+          </div>
+        </dd>
+      </dl>
+
+      <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+      </button>
+
+      <button type="button" [routerLink]="['/commerce', commerce.id, 'edit']" class="btn btn-primary">
+        <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+      </button>
+    </div>
+  </div>
+</div>

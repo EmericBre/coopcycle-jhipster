@@ -1,0 +1,27 @@
+{
+  "coopcyclejhipsterApp": {
+    "livreur": {
+      "home": {
+        "title": "Livreurs",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Vytvořit Livreur",
+        "createOrEditLabel": "Vytvořit nebo upravit Livreur",
+        "notFound": "No Livreurs found"
+      },
+      "created": "Byl vytvořen potomek entity Livreur s identifikátorem {{ param }}",
+      "updated": "Potomek entity Livreur s identifikátorem {{ param }} byl upravený.",
+      "deleted": "Potomek entity Livreur s identifikátorem {{ param }} bol smazaný.",
+      "delete": {
+        "question": "Jste si jisti, že chcete smazat Livreur {{ id }}?"
+      },
+      "detail": {
+        "title": "Livreur"
+      },
+      "id": "Id",
+      "firstname": "Firstname",
+      "lastname": "Lastname",
+      "phone": "Phone",
+      "commande": "Commande"
+    }
+  }
+}
